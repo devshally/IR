@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "300821341167",
+    "project_id": "incident-report-933ea",
+    "storage_bucket": "incident-report-933ea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:300821341167:android:6453712f0de30cb025cc1a",
+        "android_client_info": {
+          "package_name": "com.devshally.incident_report"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "300821341167-3cg1ckesjbliv39d4560v71m637b37l9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdbvfYR2CXa1irCjpj1C-IYvN94kfA8DQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "300821341167-3cg1ckesjbliv39d4560v71m637b37l9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
