@@ -37,7 +37,6 @@ class DropDownWidget extends StatelessWidget {
               fontFamily: 'Poppins',
               fontSize: 14,
               fontWeight: FontWeight.w300,
-              // color: Colors.black.withOpacity(0.4),
               overflow: TextOverflow.ellipsis,
             ),
           ),
