@@ -20,7 +20,7 @@ class LoginScreen extends StatelessWidget {
       body: BlocConsumer<AuthenticationCubit, AuthenticationState>(
         listener: (context, state) {
           if (state is AuthenticationLoaded) {
-            ///Enter main app.
+            context.go('/index');
           } else if (state is Error) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(state.message)));

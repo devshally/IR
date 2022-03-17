@@ -39,7 +39,7 @@ class _EmailVerificationState extends State<EmailVerification> {
       body: BlocConsumer<AuthenticationCubit, AuthenticationState>(
         listener: (context, state) {
           if (state is EmailVerified) {
-            context.go('/');
+            context.go('/index');
           }
         },
         builder: (context, state) {

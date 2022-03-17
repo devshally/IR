@@ -4,11 +4,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:incident_report/app/core/index.dart';
 import 'package:incident_report/app/core/splashscreen.dart';
 import 'package:incident_report/app/features/authentication/presentation/cubit/authentication_cubit.dart';
 import 'package:incident_report/app/features/authentication/presentation/pages/email_verification.dart';
 import 'package:incident_report/app/features/authentication/presentation/pages/login.dart';
 import 'package:incident_report/app/features/authentication/presentation/pages/signup.dart';
+import 'package:incident_report/app/features/incident/presentation/pages/home.dart';
+import 'package:incident_report/app/features/incident/presentation/pages/report.dart';
+import 'package:incident_report/app/features/profile/presentation/pages/profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +37,25 @@ void main() async {
         path: '/emailVerification',
         builder: (BuildContext context, GoRouterState state) =>
             const EmailVerification(),
+      ),
+      GoRoute(
+        path: '/index',
+        builder: (BuildContext context, GoRouterState state) => const Index(),
+      ),
+      GoRoute(
+        path: '/home',
+        builder: (BuildContext context, GoRouterState state) =>
+             HomeScreen(),
+      ),
+      GoRoute(
+        path: '/report',
+        builder: (BuildContext context, GoRouterState state) =>
+            const ReportScreen(),
+      ),
+      GoRoute(
+        path: '/profile',
+        builder: (BuildContext context, GoRouterState state) =>
+            const ProfileScreen(),
       ),
     ],
   );
