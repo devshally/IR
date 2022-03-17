@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 part of 'authentication_cubit.dart';
 
 abstract class AuthenticationState extends Equatable {
@@ -8,3 +10,15 @@ abstract class AuthenticationState extends Equatable {
 }
 
 class AuthenticationInitial extends AuthenticationState {}
+
+class AuthenticationLoading extends AuthenticationState {}
+
+class AuthenticationLoaded extends AuthenticationState {}
+
+class Error extends AuthenticationState {
+  const Error(this.message);
+
+  final String message;
+}
+
+class EmailVerified extends AuthenticationState {}
