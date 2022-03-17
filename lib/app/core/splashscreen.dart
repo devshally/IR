@@ -16,7 +16,7 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: SizedBox(
-          height: 100,
+          height: 130,
           child: Image.asset('assets/images/irlogo.png'),
         ),
       ),

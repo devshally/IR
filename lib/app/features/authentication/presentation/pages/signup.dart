@@ -1,4 +1,4 @@
-// ignore_for_file: sort_constructors_first, public_member_api_docs
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,12 +7,16 @@ import 'package:incident_report/app/features/authentication/presentation/cubit/a
 import 'package:incident_report/app/features/authentication/presentation/widgets/textfield_widget.dart';
 
 ///
-class LoginScreen extends StatelessWidget {
+class SignUpScreen extends StatelessWidget {
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final formGlobalKey = GlobalKey<FormState>();
 
-  LoginScreen({Key? key}) : super(key: key);
+  SignUpScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +24,7 @@ class LoginScreen extends StatelessWidget {
       body: BlocConsumer<AuthenticationCubit, AuthenticationState>(
         listener: (context, state) {
           if (state is AuthenticationLoaded) {
-            ///Enter main app.
+            context.go('/emailVerification');
           } else if (state is Error) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(state.message)));
@@ -28,7 +32,9 @@ class LoginScreen extends StatelessWidget {
         },
         builder: (context, state) {
           if (state is AuthenticationLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
           return SafeArea(
             child: Padding(
@@ -52,9 +58,20 @@ class LoginScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Text(
-              'LOG-IN',
+              'SIGN-UP',
               style: TextStyle(fontSize: 24, color: Colors.blue.shade400),
             ),
+          ),
+          TextFieldWidget(
+            label: 'Username',
+            controller: usernameController,
+            validator: (username) {
+              if (username!.length < 3) {
+                return 'Enter a valid username';
+              } else {
+                return null;
+              }
+            },
           ),
           TextFieldWidget(
             keyboardType: TextInputType.emailAddress,
@@ -73,7 +90,18 @@ class LoginScreen extends StatelessWidget {
               }
             },
           ),
-          const SizedBox(height: 20),
+          TextFieldWidget(
+            keyboardType: TextInputType.phone,
+            label: 'Phone Number',
+            controller: phoneController,
+            validator: (phone) {
+              if (phone!.length < 11) {
+                return 'Enter a valid phone number';
+              } else {
+                return null;
+              }
+            },
+          ),
           TextFieldWidget(
             label: 'Password',
             obscured: true,
@@ -81,6 +109,20 @@ class LoginScreen extends StatelessWidget {
             validator: (password) {
               if (password!.length < 6) {
                 return 'Enter a valid password';
+              } else {
+                return null;
+              }
+            },
+          ),
+          TextFieldWidget(
+            label: 'Confirm Password',
+            obscured: true,
+            controller: confirmPasswordController,
+            validator: (password) {
+              if (password!.length < 6) {
+                return 'Enter a valid password';
+              } else if (password != passwordController.text) {
+                return 'Passwords do not match';
               } else {
                 return null;
               }
@@ -95,16 +137,20 @@ class LoginScreen extends StatelessWidget {
             onPressed: () {
               if (formGlobalKey.currentState!.validate()) {
                 formGlobalKey.currentState!.save();
-                BlocProvider.of<AuthenticationCubit>(context)
-                    .login(emailController.text, passwordController.text);
+                BlocProvider.of<AuthenticationCubit>(context).signup(
+                  emailController.text,
+                  passwordController.text,
+                  usernameController.text,
+                  phoneController.text,
+                );
               }
             },
-            child: const Text('Login'),
+            child: const Text('Sign Up'),
           ),
           TextButton(
-            onPressed: () => context.go('/signup'),
+            onPressed: () => context.go('/login'),
             child: const Text(
-              "Dont't have an account? Sign Up",
+              'Already have an account? Login',
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.black,
