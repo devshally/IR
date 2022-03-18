@@ -27,6 +27,12 @@ class _EmailVerificationState extends State<EmailVerification> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _showButton();
+  }
+
+  @override
   void dispose() {
     _showButton();
     super.dispose();
@@ -34,7 +40,6 @@ class _EmailVerificationState extends State<EmailVerification> {
 
   @override
   Widget build(BuildContext context) {
-    _showButton();
     return Scaffold(
       body: BlocConsumer<AuthenticationCubit, AuthenticationState>(
         listener: (context, state) {

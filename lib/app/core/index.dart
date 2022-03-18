@@ -65,7 +65,7 @@ class _IndexState extends State<Index> {
 
   static final List<Widget> _pages = <Widget>[
     const HomeScreen(),
-    const ReportScreen(),
+    ReportScreen(),
     const ProfileScreen(),
   ];
 }

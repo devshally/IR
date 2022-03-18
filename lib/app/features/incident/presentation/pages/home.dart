@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:incident_report/app/features/authentication/presentation/widgets/textfield_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:incident_report/app/features/incident/presentation/cubit/incident_cubit.dart';
+
 import 'package:incident_report/app/features/incident/presentation/widgets/dropdown_widget.dart';
 import 'package:incident_report/app/features/incident/presentation/widgets/multitextfield.dart';
 
@@ -13,8 +15,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final TextEditingController fullNameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  final formGlobalKey = GlobalKey<FormState>();
   bool checked = false;
 
   String category = 'Select a category';
@@ -28,47 +30,97 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Image.asset('assets/images/irlogo.png', height: 90),
         toolbarHeight: 100,
       ),
-      body: SingleChildScrollView(
-        child: _buildBody(),
+      body: BlocConsumer<IncidentCubit, IncidentState>(
+        listener: (context, state) {
+          if (state is IncidentLoaded) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
+          } else if (state is Error) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
+          }
+        },
+        builder: (context, state) {
+          if (state is IncidentLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return SingleChildScrollView(
+            child: _buildBody(),
+          );
+        },
       ),
     );
   }
 
   Widget _buildBody() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          TextFieldWidget(controller: fullNameController, label: 'Full Name'),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: DropDownWidget(
-              items: const ['Select a category', 'Fire', 'Accident'],
-              hint: 'Select a category',
-              value: category,
-              onChanged: (value) {
-                setState(() {
-                  category = value!;
-                });
-              },
+    return Form(
+      key: formGlobalKey,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: DropDownWidget(
+                items: const [
+                  'Select a category',
+                  'Fire',
+                  'Rape',
+                  'Police Brutality',
+                  'Vehicle Accident',
+                  'Natural Disaster',
+                  'Misconduct',
+                  'Others',
+                ],
+                hint: 'Select a category',
+                value: category,
+                onChanged: (value) {
+                  setState(() {
+                    category = value!;
+                  });
+                },
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: MultiLineTextField(
-              controller: descriptionController,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: MultiLineTextField(
+                controller: descriptionController,
+                validator: (description) {
+                  if (description!.length < 6) {
+                    return 'Enter a valid description of the event';
+                  } else {
+                    return null;
+                  }
+                },
+              ),
             ),
-          ),
-          _buildMediaRow(),
-          _buildAccuracyRow(),
-          Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: ElevatedButton(
-              onPressed: () {},
-              child: const Text('Submit'),
+            _buildMediaRow(),
+            _buildAccuracyRow(),
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (formGlobalKey.currentState!.validate()) {
+                    formGlobalKey.currentState!.save();
+                    if (checked == false) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Kindly check the box to confirm.'),
+                        ),
+                      );
+                    } else {
+                      BlocProvider.of<IncidentCubit>(context).reportIncident(
+                        category,
+                        descriptionController.text,
+                      );
+                    }
+                  }
+                },
+                child: const Text('Submit'),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -79,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         children: [
           Expanded(
-            flex: 3,
+            flex: 2,
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(width: 1.5, color: Colors.grey),

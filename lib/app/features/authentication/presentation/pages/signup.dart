@@ -8,6 +8,7 @@ import 'package:incident_report/app/features/authentication/presentation/widgets
 
 ///
 class SignUpScreen extends StatelessWidget {
+  final TextEditingController fullNameController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -62,6 +63,7 @@ class SignUpScreen extends StatelessWidget {
               style: TextStyle(fontSize: 24, color: Colors.blue.shade400),
             ),
           ),
+          TextFieldWidget(controller: fullNameController, label: 'Full Name'),
           TextFieldWidget(
             label: 'Username',
             controller: usernameController,
@@ -142,6 +144,7 @@ class SignUpScreen extends StatelessWidget {
                   passwordController.text,
                   usernameController.text,
                   phoneController.text,
+                  fullNameController.text,
                 );
               }
             },

@@ -2,6 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Incident Report wants to access your library</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Kindly allow Incident Report to use your camera</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Kindly allow Incident Report to use your microphone</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Incident Report needs to access your location to provide better services</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Incident Report needs access to location when in the background.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
