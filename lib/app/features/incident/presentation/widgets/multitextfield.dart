@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class MultiLineTextField extends StatelessWidget {
   final TextEditingController controller;
-  const MultiLineTextField({Key? key, required this.controller})
+  final String? Function(String?)? validator;
+  const MultiLineTextField({Key? key, required this.controller, this.validator})
       : super(key: key);
 
   @override
@@ -20,6 +21,7 @@ class MultiLineTextField extends StatelessWidget {
           ),
         ),
       ),
+      validator: validator,
     );
   }
 }

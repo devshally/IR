@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:incident_report/app/features/authentication/domain/entities/user.dart';
 
 part 'authentication_state.dart';
 
@@ -17,6 +18,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     String password,
     String username,
     String phone,
+    String fullName,
   ) async {
     emit(AuthenticationLoading());
     try {
@@ -29,6 +31,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
       await _firestore.collection('users').doc(user!.uid).set(<String, dynamic>{
         'uid': user.uid,
+        'fullName': fullName,
         'username': username,
         'email': email,
         'phone': phone,
@@ -50,11 +53,13 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       );
 
       if (user.user!.emailVerified == false) {
-        await user.user!
-            .sendEmailVerification()
-            .whenComplete(() => emit(AuthenticationLoaded()));
+        await user.user!.sendEmailVerification().whenComplete(() {
+          emit(AuthenticationLoaded());
+          getUserProfile();
+        });
       } else {
         emit(AuthenticationLoaded());
+        getUserProfile();
       }
     } on FirebaseAuthException catch (e) {
       emit(Error(e.message.toString()));
@@ -62,6 +67,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   }
 
   void logout() async {
+    emit(AuthenticationLoading());
     await _auth.signOut().whenComplete(() => emit(AuthenticationInitial()));
   }
 
@@ -75,5 +81,18 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     } else {
       emit(AuthenticationLoading());
     }
+  }
+
+  ///Move to profile folder when you refactor.
+  void getUserProfile() async {
+    final uid = _auth.currentUser!.uid;
+    final collection = _firestore.collection('users').doc(uid);
+    await collection.get().then(
+      (value) {
+        emit(
+          UserProfile(UserData.fromMap(value.data()!)),
+        );
+      },
+    );
   }
 }

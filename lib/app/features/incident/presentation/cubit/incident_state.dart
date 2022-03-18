@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+
 part of 'incident_cubit.dart';
 
 abstract class IncidentState extends Equatable {
@@ -8,3 +10,17 @@ abstract class IncidentState extends Equatable {
 }
 
 class IncidentInitial extends IncidentState {}
+
+class IncidentLoading extends IncidentState {}
+
+class IncidentLoaded extends IncidentState {
+  const IncidentLoaded(this.message);
+
+  final String message;
+}
+
+class Error extends IncidentState {
+  final String message;
+
+  const Error(this.message);
+}

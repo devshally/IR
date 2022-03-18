@@ -10,6 +10,7 @@ import 'package:incident_report/app/features/authentication/presentation/cubit/a
 import 'package:incident_report/app/features/authentication/presentation/pages/email_verification.dart';
 import 'package:incident_report/app/features/authentication/presentation/pages/login.dart';
 import 'package:incident_report/app/features/authentication/presentation/pages/signup.dart';
+import 'package:incident_report/app/features/incident/presentation/cubit/incident_cubit.dart';
 import 'package:incident_report/app/features/incident/presentation/pages/home.dart';
 import 'package:incident_report/app/features/incident/presentation/pages/report.dart';
 import 'package:incident_report/app/features/profile/presentation/pages/profile.dart';
@@ -45,7 +46,7 @@ void main() async {
       GoRoute(
         path: '/home',
         builder: (BuildContext context, GoRouterState state) =>
-             HomeScreen(),
+            const HomeScreen(),
       ),
       GoRoute(
         path: '/report',
@@ -65,6 +66,9 @@ void main() async {
       providers: [
         BlocProvider<AuthenticationCubit>(
           create: (context) => AuthenticationCubit(),
+        ),
+        BlocProvider<IncidentCubit>(
+          create: (context) => IncidentCubit(),
         ),
       ],
       child: MaterialApp.router(
