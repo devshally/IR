@@ -19,6 +19,12 @@ class IncidentLoaded extends IncidentState {
   final String message;
 }
 
+class ImageUploaded extends IncidentState {
+  const ImageUploaded(this.url);
+
+  final String url;
+}
+
 class Error extends IncidentState {
   final String message;
 

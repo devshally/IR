@@ -35,6 +35,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         'username': username,
         'email': email,
         'phone': phone,
+        'userProfile':
+            'https://firebasestorage.googleapis.com/v0/b/incident-report-933ea.appspot.com/o/userProfile%2FUcFiBbTQEPX4IpBwMhT5VKN2l3j2?alt=media&token=6154cba6-76c7-4fd3-89ce-c6a14b6db7ee',
       }).whenComplete(() {
         login(email, password);
         emit(AuthenticationLoaded());
@@ -55,11 +57,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       if (user.user!.emailVerified == false) {
         await user.user!.sendEmailVerification().whenComplete(() {
           emit(AuthenticationLoaded());
-          getUserProfile();
         });
       } else {
         emit(AuthenticationLoaded());
-        getUserProfile();
       }
     } on FirebaseAuthException catch (e) {
       emit(Error(e.message.toString()));
@@ -81,18 +81,5 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     } else {
       emit(AuthenticationLoading());
     }
-  }
-
-  ///Move to profile folder when you refactor.
-  void getUserProfile() async {
-    final uid = _auth.currentUser!.uid;
-    final collection = _firestore.collection('users').doc(uid);
-    await collection.get().then(
-      (value) {
-        emit(
-          UserProfile(UserData.fromMap(value.data()!)),
-        );
-      },
-    );
   }
 }
