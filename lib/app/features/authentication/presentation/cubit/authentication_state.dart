@@ -24,13 +24,4 @@ class Error extends AuthenticationState {
   List<Object> get props => [message];
 }
 
-class UserProfile extends AuthenticationState {
-  const UserProfile(this.user);
-
-  final UserData user;
-
-  @override
-  List<Object> get props => [user];
-}
-
 class EmailVerified extends AuthenticationState {}

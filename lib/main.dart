@@ -13,6 +13,7 @@ import 'package:incident_report/app/features/authentication/presentation/pages/s
 import 'package:incident_report/app/features/incident/presentation/cubit/incident_cubit.dart';
 import 'package:incident_report/app/features/incident/presentation/pages/home.dart';
 import 'package:incident_report/app/features/incident/presentation/pages/report.dart';
+import 'package:incident_report/app/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:incident_report/app/features/profile/presentation/pages/profile.dart';
 
 void main() async {
@@ -69,6 +70,9 @@ void main() async {
         ),
         BlocProvider<IncidentCubit>(
           create: (context) => IncidentCubit(),
+        ),
+        BlocProvider<ProfileCubit>(
+          create: (context) => ProfileCubit(),
         ),
       ],
       child: MaterialApp.router(

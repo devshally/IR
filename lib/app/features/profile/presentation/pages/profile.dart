@@ -4,23 +4,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:incident_report/app/features/authentication/presentation/cubit/authentication_cubit.dart';
+import 'package:incident_report/app/features/profile/presentation/cubit/profile_cubit.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<AuthenticationCubit>(context).getUserProfile();
+    BlocProvider.of<ProfileCubit>(context).getUserProfile();
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-            onPressed: () =>
-                BlocProvider.of<AuthenticationCubit>(context).logout(),
-            icon: const Icon(
-              Icons.logout_outlined,
-              color: Colors.black,
-              size: 30,
+          BlocListener<AuthenticationCubit, AuthenticationState>(
+            listener: (context, state) {
+              if (state is AuthenticationInitial) {
+                context.go('/login');
+              }
+            },
+            child: IconButton(
+              onPressed: () {
+                BlocProvider.of<AuthenticationCubit>(context).logout();
+              },
+              icon: const Icon(
+                Icons.logout_outlined,
+                color: Colors.black,
+                size: 30,
+              ),
             ),
           ),
         ],
@@ -37,19 +46,23 @@ class ProfileScreen extends StatelessWidget {
         ),
         toolbarHeight: 100,
       ),
-      body: BlocConsumer<AuthenticationCubit, AuthenticationState>(
+      body: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
-          if (state is AuthenticationInitial) {
+          if (state is ProfileInitial) {
+            ///Work on this
             context.go('/login');
+          } else if (state is ProfileError) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         builder: (context, state) {
-          if (state is AuthenticationLoading) {
+          if (state is ProfileLoading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
-          if (state is UserProfile) {
+          if (state is ProfileLoaded) {
             return Padding(
               padding: const EdgeInsets.all(20),
               child: _buildBody(
@@ -57,6 +70,8 @@ class ProfileScreen extends StatelessWidget {
                 state.user.username.toString(),
                 state.user.email.toString(),
                 state.user.phone.toString(),
+                state.user.userProfile.toString(),
+                context,
               ),
             );
           }
@@ -67,27 +82,37 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildBody(
-      String name, String username, String email, String phoneNumber) {
+    String name,
+    String username,
+    String email,
+    String phoneNumber,
+    String userProfile,
+    BuildContext context,
+  ) {
     return Column(
       children: [
-        _buildAvatar(),
+        _buildAvatar(context, userProfile),
         _buildTable(name, username, email, phoneNumber),
       ],
     );
   }
 
-  Widget _buildAvatar() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Container(
-        height: 106,
-        width: 106,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(width: 1.5, color: Colors.blue.shade400),
-          image: const DecorationImage(
-            image: AssetImage('assets/images/paperplane.png'),
-            // fit: BoxFit.contain,
+  Widget _buildAvatar(BuildContext context, String userProfile) {
+    return GestureDetector(
+      onTap: () =>
+          BlocProvider.of<ProfileCubit>(context).updateProfilePicture(),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Container(
+          height: 120,
+          width: 120,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(width: 1.5, color: Colors.blue.shade400),
+            image: DecorationImage(
+              image: NetworkImage(userProfile),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),
@@ -95,18 +120,22 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildTable(
-      String name, String username, String email, String phoneNumber) {
+    String name,
+    String username,
+    String email,
+    String phoneNumber,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: Table(
         children: [
           TableRow(
             children: [
-              Text('Name'),
+              const Text('Name:'),
               Text(name),
             ],
           ),
-          TableRow(
+          const TableRow(
             children: [
               SizedBox(height: 15),
               SizedBox(height: 15),
@@ -114,11 +143,11 @@ class ProfileScreen extends StatelessWidget {
           ),
           TableRow(
             children: [
-              Text('Username'),
+              const Text('Username:'),
               Text(username),
             ],
           ),
-          TableRow(
+          const TableRow(
             children: [
               SizedBox(height: 15),
               SizedBox(height: 15),
@@ -126,11 +155,11 @@ class ProfileScreen extends StatelessWidget {
           ),
           TableRow(
             children: [
-              Text('Email'),
+              const Text('Email:'),
               Text(email),
             ],
           ),
-          TableRow(
+          const TableRow(
             children: [
               SizedBox(height: 15),
               SizedBox(height: 15),
@@ -138,22 +167,22 @@ class ProfileScreen extends StatelessWidget {
           ),
           TableRow(
             children: [
-              Text('Phone Number'),
+              const Text('Phone Number:'),
               Text(phoneNumber),
             ],
           ),
-          TableRow(
-            children: [
-              SizedBox(height: 15),
-              SizedBox(height: 15),
-            ],
-          ),
-          TableRow(
-            children: [
-              Text('Location'),
-              Text('Lekki, Lagos.'),
-            ],
-          ),
+          // const TableRow(
+          //   children: [
+          //     SizedBox(height: 15),
+          //     SizedBox(height: 15),
+          //   ],
+          // ),
+          // const TableRow(
+          //   children: [
+          //     Text('Location'),
+          //     Text('Lekki, Lagos.'),
+          //   ],
+          // ),
         ],
       ),
     );
