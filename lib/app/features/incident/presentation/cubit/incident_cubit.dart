@@ -7,13 +7,15 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:incident_report/app/core/location/location_services.dart';
+import 'package:incident_report/app/features/incident/domain/entities/incident.dart';
 
 part 'incident_state.dart';
 
 class IncidentCubit extends Cubit<IncidentState> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  // final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+  final uid = FirebaseAuth.instance.currentUser!.uid;
   IncidentCubit() : super(IncidentInitial());
 
   void reportIncident(
@@ -25,7 +27,6 @@ class IncidentCubit extends Cubit<IncidentState> {
     final position = await LocationServices.determinePosition();
     final geopoint = GeoPoint(position.latitude, position.longitude);
     final time = position.timestamp;
-    final uid = _auth.currentUser!.uid;
     try {
       await _firestore.collection('incidents').add(<String, dynamic>{
         'uid': uid,
@@ -36,7 +37,7 @@ class IncidentCubit extends Cubit<IncidentState> {
         'imageUrl': imageUrl,
       }).whenComplete(
         () => emit(
-          const IncidentLoaded('Successfully uploaded'),
+          const IncidentLoaded(message: 'Successfully uploaded'),
         ),
       );
     } on FirebaseException catch (e) {
@@ -51,14 +52,13 @@ class IncidentCubit extends Cubit<IncidentState> {
   void uploadMedia(File filePath, String imageName) async {
     emit(IncidentLoading());
     String uploadedFileUrl;
-    final user = _auth.currentUser!.uid;
     try {
       final reference = _storage.ref().child('incidents/$imageName');
       final uploadTask = reference.putFile(
         filePath,
         SettableMetadata(
           customMetadata: {
-            'uploaded_by': user,
+            'uploaded_by': uid,
           },
         ),
       );

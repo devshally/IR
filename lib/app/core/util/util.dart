@@ -1,6 +1,6 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 
-import 'package:geocoder/geocoder.dart';
+import 'package:geocoding/geocoding.dart';
 
 ///A utitlity class for special helpers.
 class Util {
@@ -9,10 +9,7 @@ class Util {
     required double lat,
     required double lng,
   }) async {
-    final coordinates = Coordinates(lat, lng);
-    final addresses =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
-
-    return addresses[0].addressLine;
+    final address = await placemarkFromCoordinates(lat, lng);
+    return address[0].street!;
   }
 }
