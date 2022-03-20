@@ -14,9 +14,10 @@ class IncidentInitial extends IncidentState {}
 class IncidentLoading extends IncidentState {}
 
 class IncidentLoaded extends IncidentState {
-  const IncidentLoaded(this.message);
+  const IncidentLoaded({this.message, this.incidents});
 
-  final String message;
+  final String? message;
+  final List<Incident>? incidents;
 }
 
 class ImageUploaded extends IncidentState {

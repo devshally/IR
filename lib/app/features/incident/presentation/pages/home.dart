@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
         listener: (context, state) {
           if (state is IncidentLoaded) {
             ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.message)));
+                .showSnackBar(SnackBar(content: Text(state.message!)));
           } else if (state is Error) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(state.message)));
